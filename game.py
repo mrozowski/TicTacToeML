@@ -15,7 +15,7 @@ class Machine:
         self.isReset = False
 
     # get unique hash of current board state
-    def getHash(self):
+    def get_hash(self):
         self.boardHash = str(self.board.reshape(BOARD_COLS * BOARD_ROWS))
         return self.boardHash
 
@@ -52,14 +52,14 @@ class Machine:
                 return -1, 3, 0
 
         # tie - no available positions
-        if len(self.availablePositions()) == 0:
+        if len(self.available_positions()) == 0:
             self.isEnd = True
             return [0, 0, 0]
         # not end
         self.isEnd = False
         return [None, None, None]
 
-    def availablePositions(self):
+    def available_positions(self):
         positions = []
         for i in range(BOARD_ROWS):
             for j in range(BOARD_COLS):
@@ -67,48 +67,47 @@ class Machine:
                     positions.append((i, j))
         return positions
 
-    def updateState(self, position, symbol):
+    def update_state(self, position, symbol):
         self.board[position] = symbol
         self.show_move(position, symbol)
 
-    def giveReward(self):
+    def give_reward(self):
         result = self.winner()[0]
         # backpropagate reward
         if result == 1:
-            self.p1.feedReward(1)
-            self.p2.feedReward(0)
+            self.p1.feed_reward(1)
+            self.p2.feed_reward(0)
         elif result == -1:
-            self.p1.feedReward(0)
-            self.p2.feedReward(1)
+            self.p1.feed_reward(0)
+            self.p2.feed_reward(1)
         else:
-            self.p1.feedReward(0.5)
-            self.p2.feedReward(0.5)
+            self.p1.feed_reward(0.5)
+            self.p2.feed_reward(0.5)
 
     def reset(self):
         self.board = np.zeros((BOARD_ROWS, BOARD_COLS))
         self.boardHash = None
         self.isEnd = False
 
-
     def play(self, rounds=100):
         for i in range(rounds):
             while not self.isEnd:
                 # Player 1
-                positions = self.availablePositions()
-                p1_action = self.p1.chooseAction(positions, self.board, self.p1.symbol)
+                positions = self.available_positions()
+                p1_action = self.p1.make_move(positions, self.board)
 
                 # take action and update board state
                 self.board[p1_action] = self.p1.symbol
 
-                board_hash = self.getHash()
-                self.p1.addState(board_hash)
+                board_hash = self.get_hash()
+                self.p1.add_state(board_hash)
                 # check board status if it is end
 
                 win = self.winner()[0]
                 if win is not None:
                     # self.showBoard()
                     # ended with p1 either win or draw
-                    self.giveReward()
+                    self.give_reward()
                     self.p1.reset()
                     self.p2.reset()
                     self.update_score(win)
@@ -117,19 +116,19 @@ class Machine:
 
                 else:
                     # Player 2
-                    positions = self.availablePositions()
-                    p2_action = self.p2.chooseAction(positions, self.board, self.p2.symbol)
+                    positions = self.available_positions()
+                    p2_action = self.p2.make_move(positions, self.board)
 
                     self.board[p2_action] = self.p2.symbol
 
-                    board_hash = self.getHash()
-                    self.p2.addState(board_hash)
+                    board_hash = self.get_hash()
+                    self.p2.add_state(board_hash)
 
                     win = self.winner()[0]
                     if win is not None:
                         # self.showBoard()
                         # ended with p2 either win or draw
-                        self.giveReward()
+                        self.give_reward()
                         self.p1.reset()
                         self.p2.reset()
                         self.update_score(win)
@@ -144,18 +143,18 @@ class Machine:
                 return
 
             # Player 1 turn  - Computer
-            positions = self.availablePositions()
-            p1_action = self.p1.chooseAction(positions, self.board, self.p1.symbol)
-            self.updateState(p1_action, self.p1.symbol)
+            positions = self.available_positions()
+            p1_action = self.p1.make_move(positions, self.board)
+            self.update_state(p1_action, self.p1.symbol)
 
             if self.check_win():
                 break
             else:
                 # Player 2 turn - Human
-                positions = self.availablePositions()
-                p2_action = self.p2.chooseAction(positions)
+                positions = self.available_positions()
+                p2_action = self.p2.make_move(positions)
 
-                self.updateState(p2_action, self.p2.symbol)
+                self.update_state(p2_action, self.p2.symbol)
 
                 if self.check_win():
                     break
@@ -168,18 +167,18 @@ class Machine:
                 return
 
             # Player 1 turn
-            positions = self.availablePositions()
-            p1_action = self.p1.chooseAction(positions, self.board, self.p1.symbol)
-            self.updateState(p1_action, self.p1.symbol)
+            positions = self.available_positions()
+            p1_action = self.p1.make_move(positions, self.board)
+            self.update_state(p1_action, self.p1.symbol)
             time.sleep(0.5)  # wait half second before next move
 
             if self.check_win():
                 break
             else:
                 # Player 2 turn
-                positions = self.availablePositions()
-                p2_action = self.p2.chooseAction(positions, self.board, self.p2.symbol)
-                self.updateState(p2_action, self.p2.symbol)
+                positions = self.available_positions()
+                p2_action = self.p2.make_move(positions, self.board)
+                self.update_state(p2_action, self.p2.symbol)
                 time.sleep(0.5)
 
                 if self.check_win():
@@ -193,18 +192,18 @@ class Machine:
                 return
 
             # Player 1 turn - Human
-            positions = self.availablePositions()
-            p2_action = self.p2.chooseAction(positions)
-            self.updateState(p2_action, self.p2.symbol)
+            positions = self.available_positions()
+            p2_action = self.p2.make_move(positions)
+            self.update_state(p2_action, self.p2.symbol)
 
             if self.check_win():
                 break
             else:
                 # Player 2 turn - Computer
-                positions = self.availablePositions()
-                p1_action = self.p1.chooseAction(positions, self.board, self.p1.symbol)
+                positions = self.available_positions()
+                p1_action = self.p1.make_move(positions, self.board)
 
-                self.updateState(p1_action, self.p1.symbol)
+                self.update_state(p1_action, self.p1.symbol)
 
                 if self.check_win():
                     break

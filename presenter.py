@@ -13,7 +13,7 @@ class Presenter:
         self.isTraining = False
         self.player2 = HumanPlayer("p2", -1)
         self.player1 = Player("pl", 1)
-        self.player1.loadPolicy(const.POLICY1)
+        self.player1.load_policy(const.POLICY1)
         self.machine = None
         self.game_type = ""
         self.disabled_action = True  # disable ability to click on board
@@ -54,7 +54,7 @@ class Presenter:
         self.disabled_action = True
         self.change_to_cross(None)
         self.player2 = Player("p2", -1)
-        self.player2.loadPolicy(const.POLICY2)  # load second computer player
+        self.player2.load_policy(const.POLICY2)  # load second computer player
 
         self.clean_board()
         if self.t is not None and self.t.stopped() is False:
@@ -88,8 +88,8 @@ class Presenter:
     def start_training(self):
         self.isTraining = True
         self.machine.play(5000)
-        self.player1.savePolicy()
-        self.player2.savePolicy()
+        self.player1.save_policy()
+        self.player2.save_policy()
         self.new_game()
         self.isTraining = False
 
@@ -176,7 +176,7 @@ class Presenter:
         self.mode = 1
         self.player2.symbol = 1  # change human player's letter to circle
         self.player1.symbol = -1
-        self.player1.loadPolicy(const.POLICY2)
+        self.player1.load_policy(const.POLICY2)
         self.view.statusbar.showMessage("You play circle")
 
     def change_to_cross(self, event):
@@ -187,7 +187,7 @@ class Presenter:
         self.player2.symbol = -1
         self.player1.symbol = 1
 
-        self.player1.loadPolicy(const.POLICY1)
+        self.player1.load_policy(const.POLICY1)
         self.view.statusbar.showMessage("You play cross")
 
     def exit(self):
