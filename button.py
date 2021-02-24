@@ -13,12 +13,10 @@ class PicButton(QAbstractButton):
         self.pixmap_hover = QtGui.QPixmap("graphic/button_hover.png")
         self.pixmap_pressed = QtGui.QPixmap("graphic/button_pressed.png")
         self.setStyleSheet("color: #5CDBD3; font-size: 10pt;")
-        self.pressed.connect(self.update)
-        self.released.connect(self.update)
         self.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
 
     def paintEvent(self, event):
-        """show start button"""
+        """show the button"""
         pix = self.pixmap_hover if self.underMouse() else self.pixmap
         if self.isDown():
             pix = self.pixmap_pressed

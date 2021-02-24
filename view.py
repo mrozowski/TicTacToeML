@@ -72,6 +72,8 @@ class View(object):
         self.circle_label.setPixmap(QtGui.QPixmap("graphic/circle.png"))
         self.circle_label.setScaledContents(True)
         self.circle_label.setObjectName("circle_label")
+        self.circle_label.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.circle_label.mousePressEvent = self.presenter.change_to_circle
 
         self.cross_label = QtWidgets.QLabel(self.centralwidget)
         self.cross_label.setGeometry(QtCore.QRect(525, 245, 30, 30))
@@ -79,6 +81,8 @@ class View(object):
         self.cross_label.setPixmap(QtGui.QPixmap("graphic/cross.png"))
         self.cross_label.setScaledContents(True)
         self.cross_label.setObjectName("cross_label")
+        self.cross_label.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.cross_label.mousePressEvent = self.presenter.change_to_cross
 
         gridLayoutWidget = QtWidgets.QWidget(self.centralwidget)
         gridLayoutWidget.setGeometry(QtCore.QRect(20, 20, 311, 311))

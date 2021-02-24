@@ -137,13 +137,13 @@ class Machine:
                         break
 
     def play2(self):
-        """Human vs Computer"""
+        """Computer vs Human """
         self.isReset = False
         while not self.isEnd:
             if self.isReset:  # if someone click new game before finish match it will end this method
                 return
 
-            # Player 1 turn
+            # Player 1 turn  - Computer
             positions = self.availablePositions()
             p1_action = self.p1.chooseAction(positions, self.board, self.p1.symbol)
             self.updateState(p1_action, self.p1.symbol)
@@ -151,7 +151,7 @@ class Machine:
             if self.check_win():
                 break
             else:
-                # Player 2 turn
+                # Player 2 turn - Human
                 positions = self.availablePositions()
                 p2_action = self.p2.chooseAction(positions)
 
@@ -181,6 +181,30 @@ class Machine:
                 p2_action = self.p2.chooseAction(positions, self.board, self.p2.symbol)
                 self.updateState(p2_action, self.p2.symbol)
                 time.sleep(0.5)
+
+                if self.check_win():
+                    break
+
+    def play4(self):
+        """Human vs Computer"""
+        self.isReset = False
+        while not self.isEnd:
+            if self.isReset:  # if someone click new game before finish match it will end this method
+                return
+
+            # Player 1 turn - Human
+            positions = self.availablePositions()
+            p2_action = self.p2.chooseAction(positions)
+            self.updateState(p2_action, self.p2.symbol)
+
+            if self.check_win():
+                break
+            else:
+                # Player 2 turn - Computer
+                positions = self.availablePositions()
+                p1_action = self.p1.chooseAction(positions, self.board, self.p1.symbol)
+
+                self.updateState(p1_action, self.p1.symbol)
 
                 if self.check_win():
                     break

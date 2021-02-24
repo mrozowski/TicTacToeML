@@ -1,0 +1,16 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="PyQt5.QtWidgets.clicked.connect" />
+          <option value="PyQt5.QtWidgets.pressed.connect" />
+          <option value="PyQt5.QtWidgets.released.connect" />
+          <option value="object.eventFilter" />
+          <option value="int.total_seconds" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

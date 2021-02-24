@@ -10,14 +10,15 @@ class Presenter:
     def __init__(self, _view: view.View):
         self.view = _view
         self.games = 0
+        self.isTraining = False
         self.player2 = HumanPlayer("p2", -1)
         self.player1 = Player("pl", 1)
-        self.player1.loadPolicy("policy/policy_p1")
-        self.computer = 1
+        self.player1.loadPolicy(const.POLICY1)
         self.machine = None
         self.game_type = ""
         self.disabled_action = True  # disable ability to click on board
-        self.t = None
+        self.t = None  # thread
+        self.mode = -1
 
     def setup(self):
         self.view.statusbar.showMessage(self.game_type)
@@ -34,7 +35,7 @@ class Presenter:
         self.game_type = const.GAME_TYPE_1
         self.disabled_action = False
         if isinstance(self.player2, Player):
-            self.player2 = HumanPlayer("p2", -1)
+            self.player2 = HumanPlayer("p2", self.mode)
 
         if self.t is not None and self.t.stopped() is False:
             self.t.stop()
@@ -51,9 +52,9 @@ class Presenter:
 
         self.game_type = const.GAME_TYPE_2
         self.disabled_action = True
-        if isinstance(self.player2, HumanPlayer):
-            self.player2 = Player("p2", -1)
-            self.player2.loadPolicy("policy/policy_p2")
+        self.change_to_cross(None)
+        self.player2 = Player("p2", -1)
+        self.player2.loadPolicy(const.POLICY2)  # load second computer player
 
         self.clean_board()
         if self.t is not None and self.t.stopped() is False:
@@ -85,13 +86,18 @@ class Presenter:
         self.t.start()
 
     def start_training(self):
+        self.isTraining = True
         self.machine.play(5000)
         self.player1.savePolicy()
         self.player2.savePolicy()
         self.new_game()
+        self.isTraining = False
 
     def start_human_vs_comp(self):
-        self.machine.play2()
+        if self.mode != 1:
+            self.machine.play2()
+        else:
+            self.machine.play4()
 
     def start_comp_vs_comp(self):
         self.machine.play3()
@@ -162,6 +168,27 @@ class Presenter:
         self.view.cross_score.setText("0")
         self.games = 0
         self.view.games_label.setText(str(self.games))
+
+    def change_to_circle(self, event):
+        """Human play first"""
+        if self.isTraining: return  # don't allow to change who play first during training
+        if self.player2.symbol == 1: return
+        self.mode = 1
+        self.player2.symbol = 1  # change human player's letter to circle
+        self.player1.symbol = -1
+        self.player1.loadPolicy(const.POLICY2)
+        self.view.statusbar.showMessage("You play circle")
+
+    def change_to_cross(self, event):
+        """Computer play first"""
+        if self.isTraining: return  # don't allow to change who play first during training
+        if self.player2.symbol == -1: return
+        self.mode = -1
+        self.player2.symbol = -1
+        self.player1.symbol = 1
+
+        self.player1.loadPolicy(const.POLICY1)
+        self.view.statusbar.showMessage("You play cross")
 
     def exit(self):
         exit()

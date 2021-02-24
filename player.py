@@ -9,7 +9,7 @@ class Player:
         self.symbol = symbol
         self.score = 0
         self.states = []  # record all positions taken
-        self.lr = 0.2
+        self.lr = 0.1
         self.exp_rate = exp_rate
         self.decay_gamma = 0.9
         self.states_value = {}  # state -> value
@@ -19,18 +19,20 @@ class Player:
         return boardHash
 
     def chooseAction(self, positions, current_board, symbol):
+        """Make a decision"""
         if np.random.random() <= self.exp_rate:
-            # take random action
+            # make a random decision
             idx = np.random.choice(len(positions))
             action = positions[idx]
         else:
-            value_max = -999
+            value_max = -100
             for p in positions:
+                # check all available moves
                 next_board = current_board.copy()
                 next_board[p] = symbol
                 next_boardHash = self.getHash(next_board)
                 value = 0 if self.states_value.get(next_boardHash) is None else self.states_value.get(next_boardHash)
-                # print("value", value)
+
                 if value >= value_max:
                     value_max = value
                     action = p
